@@ -36,7 +36,7 @@ namespace IbagTag
 
                     if (e.Name != null)
                     {
-                        var n = ScanDevices.Find(x => x.Uuid == e.Uuid);
+                        IDev n = ScanDevices.Find(x => x.Uuid == e.Uuid);
                         if (n == null)
                         {
                             ScanDevices.Add(e);
@@ -45,19 +45,22 @@ namespace IbagTag
 
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    // Log or handle exception as needed
+                }
 
             });
         }
 
         private async void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-            var n = (BleList)e.Item;
-            foreach (var dev in ScanDevices)
+            BleList n = (BleList)e.Item;
+            foreach (IDev dev in ScanDevices)
             {
                 if (n.Uuid == dev.Uuid)
                 {
-                    var check = await DisplayAlert("", "Connecting to  [" + dev.Name + "]", "ok", "cancel");
+                    bool check = await DisplayAlert("", "Connecting to  [" + dev.Name + "]", "ok", "cancel");
 
                     if (check)
                     {

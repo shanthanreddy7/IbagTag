@@ -61,7 +61,7 @@ namespace IbagTag
         // activate the LED Mode 
         void ActivateLEDMode()
         {
-            foreach (var c in AllCharacteristics)
+            foreach (IGattCharacteristic c in AllCharacteristics)
             {
                 //validate if eligible to the LEDS //
                 if (c.Uuid.StartsWith("41e10003"))
@@ -94,9 +94,9 @@ namespace IbagTag
         // to blin to green one side...
         private void blink_green_one(object sender, EventArgs e)
         {
-            var blue_byteArray = StringToByteArray(blink_green_one_input);
+            byte[] blue_byteArray = StringToByteArray(blink_green_one_input);
 
-            if (SelectCharacteristic != null)
+            if (SelectCharacteristic != null && blue_byteArray != null)
             {
                 SelectCharacteristic.Write(blue_byteArray);
             }
@@ -105,9 +105,9 @@ namespace IbagTag
         // to blink to green all...
         private void blink_green_all(object sender, EventArgs e)
         {
-            var green_byteArray = StringToByteArray(blink_green_all_input);
+            byte[] green_byteArray = StringToByteArray(blink_green_all_input);
 
-            if (SelectCharacteristic != null)
+            if (SelectCharacteristic != null && green_byteArray != null)
             {
                 SelectCharacteristic.Write(green_byteArray);
             }
@@ -116,9 +116,9 @@ namespace IbagTag
         // to set it back its original state...
         private void reset(object sender, EventArgs e)
         {
-            var reset_byte_response = StringToByteArray(reset_off_red);
+            byte[] reset_byte_response = StringToByteArray(reset_off_red);
 
-            if (SelectCharacteristic != null)
+            if (SelectCharacteristic != null && reset_byte_response != null)
             {
                 SelectCharacteristic.Write(reset_byte_response);
             }
@@ -133,7 +133,11 @@ namespace IbagTag
                                  .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
                                  .ToArray();
             }
-            catch { return null; }
+            catch (Exception ex)
+            {
+                // Handle conversion errors gracefully
+                return null;
+            }
         }
     }
 }
